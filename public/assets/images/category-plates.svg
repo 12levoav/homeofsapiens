@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 800" role="img" aria-label="Plates">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#b08a64"/>
+      <stop offset="1" stop-color="#7e5f44"/>
+    </linearGradient>
+  </defs>
+  <rect width="560" height="800" fill="url(#bg)"/>
+  <circle cx="250" cy="550" r="180" fill="#b68a51"/>
+  <circle cx="250" cy="550" r="130" fill="#987041"/>
+  <circle cx="250" cy="550" r="110" fill="#c69b67"/>
+  <ellipse cx="235" cy="190" rx="65" ry="42" fill="#2f1e14"/>
+  <ellipse cx="233" cy="184" rx="52" ry="32" fill="#3f2b1d"/>
+  <ellipse cx="312" cy="560" rx="14" ry="14" fill="#7c1f24"/>
+  <path d="M60 320L250 430L90 520z" fill="#d5bea2" opacity="0.6"/>
+</svg>

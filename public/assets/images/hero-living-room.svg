@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 620" role="img" aria-label="Warm living room">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#7b4e2d"/>
+      <stop offset="0.35" stop-color="#99653f"/>
+      <stop offset="0.7" stop-color="#b17a4f"/>
+      <stop offset="1" stop-color="#d8b387"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#d6c5ad"/>
+      <stop offset="1" stop-color="#c2ad91"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#3f2a1e"/>
+      <stop offset="1" stop-color="#24160f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="620" fill="url(#wall)"/>
+  <rect y="470" width="1920" height="150" fill="url(#floor)"/>
+  <rect x="1090" y="325" width="705" height="160" rx="64" fill="#ece3d4"/>
+  <ellipse cx="1275" cy="504" rx="130" ry="44" fill="#8f582f"/>
+  <rect x="1148" y="496" width="250" height="35" rx="14" fill="#a97345"/>
+  <ellipse cx="900" cy="500" rx="135" ry="68" fill="#c9a279"/>
+  <ellipse cx="820" cy="505" rx="98" ry="60" fill="#d0ae88"/>
+  <rect x="94" y="378" width="510" height="30" rx="14" fill="url(#wood)"/>
+  <rect x="165" y="402" width="58" height="74" rx="8" fill="#623d27"/>
+  <rect x="470" y="402" width="56" height="74" rx="8" fill="#623d27"/>
+  <rect x="270" y="368" width="48" height="118" rx="10" fill="#603521"/>
+  <rect x="715" y="250" width="110" height="140" rx="55" fill="#f0e4d3"/>
+  <rect x="765" y="388" width="4" height="80" fill="#3a2d22"/>
+  <rect x="775" y="388" width="4" height="80" fill="#3a2d22"/>
+  <circle cx="300" cy="95" r="52" fill="#dacaa8" opacity="0.9"/>
+  <ellipse cx="250" cy="104" rx="112" ry="20" fill="#e7dabc"/>
+  <rect x="1655" y="165" width="190" height="305" fill="#efe7d9" opacity="0.45"/>
+  <circle cx="1765" cy="395" r="58" fill="#2a4b27"/>
+  <circle cx="1730" cy="350" r="44" fill="#375f34"/>
+  <circle cx="1788" cy="345" r="37" fill="#345f31"/>
+  <circle cx="82" cy="360" r="64" fill="#26472c"/>
+  <circle cx="98" cy="275" r="56" fill="#365f33"/>
+  <circle cx="128" cy="215" r="46" fill="#426f3f"/>
+</svg>

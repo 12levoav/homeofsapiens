@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 980" role="img" aria-label="Story living room">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#9d6f43"/>
+      <stop offset="0.45" stop-color="#855936"/>
+      <stop offset="1" stop-color="#68462d"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#63482f"/>
+      <stop offset="1" stop-color="#4e3926"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="980" fill="url(#wall)"/>
+  <path d="M130 410c0-210 115-310 250-310 154 0 249 118 249 310v360H130z" fill="#7a5534"/>
+  <rect y="770" width="760" height="210" fill="url(#floor)"/>
+  <rect x="150" y="610" width="460" height="150" rx="36" fill="#ccb093"/>
+  <rect x="300" y="540" width="170" height="130" rx="20" fill="#69452c"/>
+  <rect x="205" y="675" width="90" height="65" rx="22" fill="#d9c0a5"/>
+  <rect x="460" y="675" width="90" height="65" rx="22" fill="#d9c0a5"/>
+  <rect x="238" y="748" width="284" height="72" rx="10" fill="#6d4226"/>
+</svg>

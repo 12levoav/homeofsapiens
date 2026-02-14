@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 800" role="img" aria-label="Vases">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#c8c4b8"/>
+      <stop offset="1" stop-color="#abaa9f"/>
+    </linearGradient>
+  </defs>
+  <rect width="560" height="800" fill="url(#bg)"/>
+  <ellipse cx="270" cy="640" rx="210" ry="48" fill="#a88f70" opacity="0.48"/>
+  <path d="M225 420c0-62 30-90 80-90s80 28 80 90c0 95-28 180-80 180s-80-85-80-180z" fill="#915c39"/>
+  <path d="M270 355h70v32h-70z" fill="#7d4a2f"/>
+  <path d="M150 520c0-45 20-68 54-68s54 23 54 68c0 66-22 128-54 128s-54-62-54-128z" fill="#be9e7a"/>
+  <path d="M100 618c0-34 16-52 42-52 27 0 42 18 42 52 0 46-17 90-42 90-26 0-42-44-42-90z" fill="#835634"/>
+  <ellipse cx="372" cy="610" rx="86" ry="28" fill="#d7c6ab"/>
+</svg>
