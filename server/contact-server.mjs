@@ -1,45 +1,29 @@
 import { createServer } from 'node:http';
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { createReadStream, existsSync, statSync } from 'node:fs';
+import { extname, normalize, resolve, sep } from 'node:path';
 
-const PORT = Number(process.env.CONTACT_API_PORT || 8787);
 const MAX_BODY_BYTES = 1024 * 1024;
 
-loadEnvFile('.env.resend');
-
+const PORT = Number(process.env.PORT || process.env.CONTACT_API_PORT || 8787);
+const DIST_DIR = resolve(process.cwd(), 'dist');
+const INDEX_FILE = resolve(DIST_DIR, 'index.html');
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const CONTACT_TO = process.env.CONTACT_TO || 'arakelyankima@gmail.com';
-const CONTACT_FROM = process.env.CONTACT_FROM || 'onboarding@resend.dev';
+const CONTACT_TO = process.env.CONTACT_TO || '';
+const CONTACT_FROM = process.env.CONTACT_FROM || '';
 
-function loadEnvFile(fileName) {
-  const absolute = resolve(process.cwd(), fileName);
-
-  if (!existsSync(absolute)) {
-    return;
-  }
-
-  const raw = readFileSync(absolute, 'utf8');
-  const lines = raw.split('\n');
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) {
-      continue;
-    }
-
-    const equalIndex = trimmed.indexOf('=');
-    if (equalIndex < 1) {
-      continue;
-    }
-
-    const key = trimmed.slice(0, equalIndex).trim();
-    const value = trimmed.slice(equalIndex + 1).trim().replace(/^['"]|['"]$/g, '');
-
-    if (!(key in process.env)) {
-      process.env[key] = value;
-    }
-  }
-}
+const MIME_TYPES = {
+  '.css': 'text/css; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.jpeg': 'image/jpeg',
+  '.jpg': 'image/jpeg',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.txt': 'text/plain; charset=utf-8',
+  '.webp': 'image/webp'
+};
 
 function sendJson(res, statusCode, payload) {
   const data = JSON.stringify(payload);
@@ -88,7 +72,7 @@ function parseJsonBody(req) {
         const raw = Buffer.concat(chunks).toString('utf8') || '{}';
         const parsed = JSON.parse(raw);
         resolveBody(parsed);
-      } catch (error) {
+      } catch {
         rejectBody(new Error('Invalid JSON'));
       }
     });
@@ -132,57 +116,126 @@ async function sendViaResend({ name, email, message }) {
   return body;
 }
 
+function sendFile(res, filePath) {
+  const extension = extname(filePath).toLowerCase();
+  const contentType = MIME_TYPES[extension] || 'application/octet-stream';
+  const cacheControl =
+    extension === '.html' ? 'no-cache' : extension ? 'public, max-age=31536000, immutable' : 'no-cache';
+
+  res.writeHead(200, {
+    'Content-Type': contentType,
+    'Cache-Control': cacheControl
+  });
+
+  createReadStream(filePath).pipe(res);
+}
+
+function resolveDistPath(pathname) {
+  const normalized = normalize(pathname).replace(/\\/g, '/');
+  const target = normalized.startsWith('/') ? normalized : `/${normalized}`;
+  const absolute = resolve(DIST_DIR, `.${target}`);
+  const distPrefix = `${DIST_DIR}${sep}`;
+
+  if (absolute !== DIST_DIR && !absolute.startsWith(distPrefix)) {
+    return null;
+  }
+
+  return absolute;
+}
+
+function serveFrontend(req, res, pathname) {
+  if (!existsSync(INDEX_FILE)) {
+    sendJson(res, 503, { error: 'Frontend build not found. Run npm run build first.' });
+    return;
+  }
+
+  const requestedPath = resolveDistPath(pathname);
+  if (!requestedPath) {
+    sendJson(res, 400, { error: 'Invalid path' });
+    return;
+  }
+
+  try {
+    if (existsSync(requestedPath) && statSync(requestedPath).isFile()) {
+      sendFile(res, requestedPath);
+      return;
+    }
+  } catch {
+    sendJson(res, 500, { error: 'Unable to read requested file.' });
+    return;
+  }
+
+  sendFile(res, INDEX_FILE);
+}
+
 const server = createServer(async (req, res) => {
+  const url = new URL(req.url || '/', 'http://localhost');
+  const pathname = url.pathname;
+
   if (req.method === 'OPTIONS') {
     sendJson(res, 204, {});
     return;
   }
 
-  if (req.method === 'GET' && req.url === '/health') {
+  if (req.method === 'GET' && pathname === '/health') {
     sendJson(res, 200, { ok: true });
     return;
   }
 
-  if (req.method !== 'POST' || req.url !== '/api/contact') {
-    sendJson(res, 404, { error: 'Not found' });
+  if (req.method === 'POST' && pathname === '/api/contact') {
+    if (!RESEND_API_KEY) {
+      sendJson(res, 500, { error: 'RESEND_API_KEY is missing' });
+      return;
+    }
+    if (!CONTACT_TO) {
+      sendJson(res, 500, { error: 'CONTACT_TO is missing' });
+      return;
+    }
+    if (!CONTACT_FROM) {
+      sendJson(res, 500, { error: 'CONTACT_FROM is missing' });
+      return;
+    }
+
+    try {
+      const payload = await parseJsonBody(req);
+      const name = String(payload?.name || '').trim().slice(0, 120);
+      const email = String(payload?.email || '').trim().slice(0, 180);
+      const message = String(payload?.message || '').trim().slice(0, 5000);
+      const website = String(payload?.website || '').trim();
+
+      if (website) {
+        sendJson(res, 200, { ok: true });
+        return;
+      }
+
+      if (!name || !email || !message) {
+        sendJson(res, 400, { error: 'Name, email, and message are required.' });
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        sendJson(res, 400, { error: 'Please provide a valid email.' });
+        return;
+      }
+
+      const result = await sendViaResend({ name, email, message });
+      sendJson(res, 200, { ok: true, id: result?.id || null });
+      return;
+    } catch (error) {
+      sendJson(res, 500, { error: error?.message || 'Unable to send message.' });
+      return;
+    }
+  }
+
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    serveFrontend(req, res, pathname);
     return;
   }
 
-  if (!RESEND_API_KEY) {
-    sendJson(res, 500, { error: 'RESEND_API_KEY is missing' });
-    return;
-  }
-
-  try {
-    const payload = await parseJsonBody(req);
-    const name = String(payload?.name || '').trim().slice(0, 120);
-    const email = String(payload?.email || '').trim().slice(0, 180);
-    const message = String(payload?.message || '').trim().slice(0, 5000);
-    const website = String(payload?.website || '').trim();
-
-    if (website) {
-      sendJson(res, 200, { ok: true });
-      return;
-    }
-
-    if (!name || !email || !message) {
-      sendJson(res, 400, { error: 'Name, email, and message are required.' });
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      sendJson(res, 400, { error: 'Please provide a valid email.' });
-      return;
-    }
-
-    const result = await sendViaResend({ name, email, message });
-    sendJson(res, 200, { ok: true, id: result?.id || null });
-  } catch (error) {
-    sendJson(res, 500, { error: error?.message || 'Unable to send message.' });
-  }
+  sendJson(res, 404, { error: 'Not found' });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   // eslint-disable-next-line no-console
-  console.log(`Contact API running on http://localhost:${PORT}`);
+  console.log(`Home of Sapiens web server running on port ${PORT}`);
 });

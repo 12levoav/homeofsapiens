@@ -11,13 +11,23 @@
 5. Or run both together:
    - `npm run dev:full`
 
+## DigitalOcean App Platform
+- Build command: `npm ci && npm run build`
+- Run command: `npm start`
+- App must expose `PORT` (DigitalOcean sets this automatically, usually `8080`).
+- Required env vars in App settings (`Run and build time`, encrypted):
+  - `RESEND_API_KEY`
+  - `CONTACT_TO`
+  - `CONTACT_FROM`
+  - `GEMINI_API_KEY` (only needed if you run Gemini generation scripts in the app environment)
+
 ## Build
 - `npm run build`
 - `npm run preview`
 
 ## Gemini Image Generation
 - Script: `/Users/kimaarakelyan/Documents/homeofsapiens/scripts/gemini_image_gen.py`
-- Key file (local, gitignored): `/Users/kimaarakelyan/Documents/homeofsapiens/.env.gemini`
+- Requires `GEMINI_API_KEY` in environment (or pass `--api-key`)
 
 Example:
 - `python3 /Users/kimaarakelyan/Documents/homeofsapiens/scripts/gemini_image_gen.py --prompt "Minimal sandy cave-style house exterior at golden hour" --name hero-cave-house`
@@ -35,16 +45,15 @@ Defaults:
 - `/Users/kimaarakelyan/Documents/homeofsapiens/server/contact-server.mjs` - local contact API forwarding messages to Resend
 
 ## Contact Form (Resend)
-- Local env file: `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend`
-- Tracked template: `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend.example`
 - Required variables:
   - `RESEND_API_KEY`
   - `CONTACT_TO`
   - `CONTACT_FROM`
 
 ## Environment Files
+- Local `.env` files are optional for local development only.
 - Do not commit real keys in `.env.*` files.
-- Use templates:
+- Optional templates:
   - `/Users/kimaarakelyan/Documents/homeofsapiens/.env.gemini.example`
   - `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend.example`
 

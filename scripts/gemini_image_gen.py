@@ -20,23 +20,6 @@ from urllib import error, parse, request
 
 DEFAULT_MODEL = "gemini-2.5-flash-image"
 DEFAULT_OUT_DIR = Path("output/gemini")
-DEFAULT_ENV_FILE = Path(".env.gemini")
-
-
-def load_env_file(path: Path) -> None:
-    if not path.exists():
-        return
-
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-
-        key, value = line.split("=", 1)
-        key = key.strip()
-        value = value.strip().strip('"').strip("'")
-        if key and key not in os.environ:
-            os.environ[key] = value
 
 
 def extension_from_mime(mime_type: str) -> str:
@@ -135,23 +118,15 @@ def main() -> int:
     parser.add_argument("--model", default=DEFAULT_MODEL, help=f"Gemini model (default: {DEFAULT_MODEL})")
     parser.add_argument("--name", default="image", help="Output file base name")
     parser.add_argument("--out-dir", default=str(DEFAULT_OUT_DIR), help=f"Output directory (default: {DEFAULT_OUT_DIR})")
-    parser.add_argument(
-        "--env-file",
-        default=str(DEFAULT_ENV_FILE),
-        help=f"Env file to load before running (default: {DEFAULT_ENV_FILE})",
-    )
+    parser.add_argument("--api-key", default="", help="Gemini API key (optional, falls back to GEMINI_API_KEY env var)")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
     parser.add_argument("--save-json", action="store_true", help="Save raw response JSON next to outputs")
 
     args = parser.parse_args()
 
-    load_env_file(Path(args.env_file))
-
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = args.api_key or os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError(
-            "Missing GEMINI_API_KEY. Set it in your shell or create .env.gemini with: GEMINI_API_KEY=your_key"
-        )
+        raise RuntimeError("Missing GEMINI_API_KEY. Set it in your environment or pass --api-key.")
 
     response = generate_content(api_key=api_key, model=args.model, prompt=args.prompt)
     images = extract_images(response)
