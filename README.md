@@ -36,10 +36,17 @@ Defaults:
 
 ## Contact Form (Resend)
 - Local env file: `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend`
+- Tracked template: `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend.example`
 - Required variables:
   - `RESEND_API_KEY`
   - `CONTACT_TO`
   - `CONTACT_FROM`
+
+## Environment Files
+- Do not commit real keys in `.env.*` files.
+- Use templates:
+  - `/Users/kimaarakelyan/Documents/homeofsapiens/.env.gemini.example`
+  - `/Users/kimaarakelyan/Documents/homeofsapiens/.env.resend.example`
 
 ## Asset Replacement
 If you have the exact production images/logos, replace files in `/Users/kimaarakelyan/Documents/homeofsapiens/public/assets/images` and `/Users/kimaarakelyan/Documents/homeofsapiens/public/assets/logos` with the same names.

@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+.vite
+.env.gemini
+.env.resend
+.env
+.env.*
+!.env.gemini.example
+!.env.resend.example
