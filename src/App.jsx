@@ -312,7 +312,7 @@ function Contact() {
           <h3>Reach us</h3>
           <p>Home of Sapiens LLC</p>
           <p>Yerevan, Armenia</p>
-          <a href="mailto:info@homeofsapiens.com">info@homeofsapiens.com</a>
+          <a href="mailto:info@homeofsapiens.am">info@homeofsapiens.am</a>
           <a href="tel:+37455772022">+37455772022</a>
           <p className="contact-hours">Mon-Sat, 10:00-20:00</p>
         </article>
@@ -389,7 +389,7 @@ function Footer() {
 
       <address>
         <p>Home of Sapiens LLC</p>
-        <a href="mailto:info@homeofsapiens.com">info@homeofsapiens.com</a>
+        <a href="mailto:info@homeofsapiens.am">info@homeofsapiens.am</a>
       </address>
     </footer>
   );
