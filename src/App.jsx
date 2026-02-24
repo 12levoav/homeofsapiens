@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const partnerLogos = [
-  { name: 'SOHO HOUSE', src: '/assets/logos/kave-home.svg' },
+  { name: 'SOHO HOUSE', src: '/assets/logos/soho-house.svg' },
   { name: 'ASA Germany', src: '/assets/logos/asa.svg' },
   { name: 'Ferm Living', src: '/assets/logos/ferm-living.svg' },
   { name: 'Bloomingville', src: '/assets/logos/bloomingville.svg' },
